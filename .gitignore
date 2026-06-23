@@ -2,16 +2,19 @@
 pycache/
 *.py[cod]
 *.sqlite3
+*.pyo
+*.pyd
 
 # Virtual environment
 venv/
 env/
 .venv/
+.env
 
 # Django
 *.log
-settings.py
 db.sqlite3
+media/
 
 # Environment variables
 .env
@@ -29,3 +32,5 @@ htmlcov/
 
 # migrations cache (не всегда нужно, но можно)
 **/migrations/pycache/
+
+.log
