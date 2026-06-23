@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from random import sample
 
+
 # Create your views here.
 class PetViewSet(viewsets.ModelViewSet):
     queryset = Pet.objects.all()
