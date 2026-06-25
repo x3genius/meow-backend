@@ -5,6 +5,7 @@ ENV_DB_PASSWORD = "пароль бд"
 ENV_DB_HOST = "db"
 ENV_DB_PORT = "порт бд"
 ENV_ALLOWED_HOSTS = "разрешенные хосты через запятую"
+ENV_CSRF_TRUSTED_ORIGINS = "доверенные хосты через запятую"
 ENV_DEBUG = True  # True/False
 SUPERUSERS = "admin, admin2, admin3"
 DEFAULT_PASSWORD = "default_meow_password"
