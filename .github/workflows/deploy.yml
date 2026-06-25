@@ -1,0 +1,26 @@
+name: Deploy to server
+
+on:
+    workflow_run:
+        workflows: ["Build and Push Django Docker Image"]
+        types:
+            - completed
+    workflow_dispatch:
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        steps:
+            - name: Deploy to Server via SSH
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  script: |
+                      echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+                      cd /opt/meow/app
+                      docker compose pull
+                      docker compose up -d --remove-orphans
+                      docker image prune -f
