@@ -1,31 +1,50 @@
+name: meow
+
 services:
   db:
     image: postgres:17
-
     environment:
       POSTGRES_DB: ${ENV_DB_NAME}
       POSTGRES_USER: ${ENV_DB_USER}
       POSTGRES_PASSWORD: ${ENV_DB_PASSWORD}
-
     ports:
-      - ${ENV_DB_PORT}:${ENV_DB_PORT}
-
+      - "${ENV_DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+
+  init-app:
+    build: .
+    environment:
+      - SUPERUSERS=${SUPERUSERS}
+      - DEFAULT_PASSWORD=${DEFAULT_PASSWORD}
+      - ENV_DB_NAME=${ENV_DB_NAME}
+      - ENV_DB_USER=${ENV_DB_USER}
+      - ENV_DB_PASSWORD=${ENV_DB_PASSWORD}
+    command: sh -c "python manage.py migrate && python manage.py initadmin"
+    depends_on:
+      db:
+        condition: service_healthy
 
   web:
     build: .
-
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-
     volumes:
       - .:/app
-
     ports:
       - "8000:8000"
-
+    environment:
+      - ENV_DB_NAME=${ENV_DB_NAME}
+      - ENV_DB_USER=${ENV_DB_USER}
+      - ENV_DB_PASSWORD=${ENV_DB_PASSWORD}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      init-app:
+        condition: service_completed_successfully
 
 volumes:
   postgres_data:
