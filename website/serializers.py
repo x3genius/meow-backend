@@ -8,6 +8,7 @@ class PetPhotoSerializer(serializers.ModelSerializer):
 
 class PetSerializer(serializers.ModelSerializer):
     age = serializers.ReadOnlyField()
+    age_category = serializers.ReadOnlyField()
     photos = PetPhotoSerializer(many=True, read_only=True)
     class Meta:
         model = Pet
