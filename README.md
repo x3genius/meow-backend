@@ -27,7 +27,7 @@
 ### Клонирование репозитория
 
 `git clone https://github.com/x3genius/meow-backend`
-`cd meowcenter`
+`cd meow-backend`
 
 ---
 

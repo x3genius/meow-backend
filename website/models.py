@@ -25,7 +25,6 @@ class Pet(models.Model):
 
     video = models.CharField("Видео", max_length=255, blank=True)
 
-    created_at = models.DateTimeField("Дата добавления в базу", auto_now_add=True)
     @property
     def age(self):
         today = date.today()
@@ -43,6 +42,17 @@ class Pet(models.Model):
             return str(years) + " года"
         return str(years) + " лет"
     
+    @property
+    def age_category(self):
+        today = date.today()
+        months_diff = (today.year - self.approximate_birth_date.year) * 12 + (today.month - self.approximate_birth_date.month)
+        if months_diff <= 12:
+            return "little"
+        elif months_diff <= 131:
+            return "adult"
+        else:
+            return "elderly"
+
 class PetPhoto(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='photos')
     image = models.ImageField("Фото", upload_to='photos/')

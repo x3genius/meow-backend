@@ -17,12 +17,11 @@ class PetAdmin(admin.ModelAdmin):
     inlines = [PetPhotoInline]
     fieldsets = [
         (None, {"fields": ["name", "approximate_birth_date", "gender", "health_issues", "description", "status", "video"]}),
-        ("Date information", {"fields": ["created_at"], "classes": ["collapse"]}),
+        ("Technical information", {"fields": ["age_category"], "classes": ["collapse"]}),
     ]
     list_display = ["name", "approximate_birth_date", "age", "gender", "health_issues", "description", "status", "video"]
-    list_filter = ["created_at"]
     search_fields = ["name"]
-    readonly_fields = ["created_at"]
+    readonly_fields = ["age_category"]
 
 admin.site.register(Pet, PetAdmin)
 admin.site.site_header = "meow-center.ru"
