@@ -22,7 +22,7 @@ class PetViewSet(viewsets.ModelViewSet):
     def random(self, request):
         count = int(request.query_params.get("count", 4))
 
-        pets = list(self.get_queryset())
+        pets = list(self.get_queryset().filter(status='available'))
         random_pets = sample(pets, min(count, len(pets)))
 
         serializer = self.get_serializer(random_pets, many=True)
