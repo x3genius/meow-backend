@@ -8,6 +8,8 @@
 
 `http://127.0.0.1:8000/media/photos/1.png` -- фото с названием 1.png
 
+`/api/pets/available/` -- со статусом available
+
 # Запуск проекта
 
 ### Требования
