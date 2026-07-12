@@ -1,5 +1,8 @@
 from django.db import models
 from datetime import date
+from io import BytesIO
+from django.core.files.base import ContentFile
+from PIL import Image
 
 # Create your models here.
 class Pet(models.Model):
@@ -56,4 +59,24 @@ class Pet(models.Model):
 class PetPhoto(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='photos')
     image = models.ImageField("Фото", upload_to='photos/')
-    
+    def save(self, *args, **kwargs):
+        if self.image:
+            img = Image.open(self.image)
+            if img.mode not in ("RGB", "RGBA"):
+                img = img.convert("RGBA")
+            #img.thumbnail((1920, 1920))
+            output = BytesIO()
+            img.save(
+                output,
+                format="WEBP",
+                quality=80,
+                method=6
+            )
+            output.seek(0)
+            filename = self.image.name.rsplit(".", 1)[0] + ".webp"
+            self.image.save(
+                filename,
+                ContentFile(output.read()),
+                save=False
+            )
+        super().save(*args, **kwargs)
