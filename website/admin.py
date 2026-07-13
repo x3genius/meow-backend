@@ -14,9 +14,11 @@ class PetPhotoInline(admin.TabularInline):
     image_preview.short_description = 'Превью фото'
 
 class PetAdmin(admin.ModelAdmin):
+    class Media:
+        js = ('pet_admin.js',)
     inlines = [PetPhotoInline]
     fieldsets = [
-        (None, {"fields": ["name", "approximate_birth_date", "gender", "health_issues", "description", "status", "video"]}),
+        (None, {"fields": ["name", "approximate_birth_date", "gender", "health_issues", "description", "status", "video"]}), ("Информация о новом владельце", {"fields": ["new_owner", "phone", "mail", "taken_date"]}),
         ("Technical information", {"fields": ["age_category"], "classes": ["collapse"]}),
     ]
     list_display = ["name", "approximate_birth_date", "age", "gender", "health_issues", "description", "status", "video"]

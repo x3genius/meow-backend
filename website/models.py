@@ -55,6 +55,12 @@ class Pet(models.Model):
             return "adult"
         else:
             return "elderly"
+        
+    new_owner = models.CharField("ФИО забравшего", max_length=100, blank=True, null=True)
+    phone = models.CharField("Телефон забравшего", max_length=20, blank=True, null=True)
+    mail = models.EmailField("Почта забравшего", max_length=100, blank=True, null=True)
+    taken_date = models.DateField("Дата забирания", blank=True, null=True)
+
 
 class PetPhoto(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='photos')
