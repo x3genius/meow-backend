@@ -3,6 +3,7 @@ from datetime import date
 from io import BytesIO
 from django.core.files.base import ContentFile
 from PIL import Image
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 class Pet(models.Model):
@@ -60,6 +61,33 @@ class Pet(models.Model):
     phone = models.CharField("Телефон забравшего", max_length=20, blank=True, null=True)
     mail = models.EmailField("Почта забравшего", max_length=100, blank=True, null=True)
     taken_date = models.DateField("Дата забирания", blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if self.status == 'available':
+            self.new_owner = None
+            self.phone = None
+            self.mail = None
+            self.taken_date = None
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        if self.status in ("adopted", "foster"):
+            errors = {}
+
+            if not self.new_owner:
+                errors["new_owner"] = "Это поле обязательно."
+
+            if not self.phone:
+                errors["phone"] = "Это поле обязательно."
+
+            if not self.mail:
+                errors["mail"] = "Это поле обязательно."
+
+            if not self.taken_date:
+                errors["taken_date"] = "Это поле обязательно."
+
+            if errors:
+                raise ValidationError(errors)
 
 
 class PetPhoto(models.Model):

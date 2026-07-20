@@ -22,6 +22,7 @@ class PetAdmin(admin.ModelAdmin):
         ("Technical information", {"fields": ["age_category"], "classes": ["collapse"]}),
     ]
     list_display = ["name", "approximate_birth_date", "age", "gender", "health_issues", "description", "status", "video"]
+    list_filter = ["status"]
     search_fields = ["name"]
     readonly_fields = ["age_category"]
 
