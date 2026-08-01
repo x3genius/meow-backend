@@ -16,12 +16,15 @@ class Pet(models.Model):
         ('available', 'Доступен для помощи'),
         ('adopted', 'Взят домой'),
         ('foster', 'Взят на передержку'),
+        ('treatment', 'Нуждается в лечении'),
     ]
 
     name = models.CharField("Имя", max_length=100, blank=False)
     gender = models.CharField("Гендер", max_length=10, choices=GENDER_CHOICES, blank=False)
     approximate_birth_date = models.DateField("Дата рождения (приблизительно)", default=date.today, blank=False)
     health_issues = models.BooleanField("Есть проблемы со здоровьем", default=False)
+
+    treatment_description = models.CharField("Описание лечения", max_length=100, blank=True, default="", help_text="Кратко опишите необходимое лечение. Лимит - 50 символов")
 
     description = models.TextField("Описание", blank=False)
 
@@ -68,11 +71,13 @@ class Pet(models.Model):
             self.phone = None
             self.mail = None
             self.taken_date = None
+        if self.status != 'treatment':
+            self.treatment_description = ""
         super().save(*args, **kwargs)
 
     def clean(self):
+        errors = {}
         if self.status in ("adopted", "foster"):
-            errors = {}
 
             if not self.new_owner:
                 errors["new_owner"] = "Это поле обязательно."
@@ -85,9 +90,11 @@ class Pet(models.Model):
 
             if not self.taken_date:
                 errors["taken_date"] = "Это поле обязательно."
-
-            if errors:
-                raise ValidationError(errors)
+        if self.status == "treatment":
+            if not self.treatment_description:
+                errors["treatment_description"] = "Это поле обязательно."
+        if errors:
+            raise ValidationError(errors)
 
 
 class PetPhoto(models.Model):
