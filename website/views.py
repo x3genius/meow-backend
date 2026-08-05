@@ -32,3 +32,8 @@ class PetViewSet(viewsets.ModelViewSet):
         available_pets = self.get_queryset().filter(status='available')
         serializer = self.get_serializer(available_pets, many=True)
         return Response(serializer.data)
+    @action(detail=False, methods=["get"])
+    def treatment(self, request):
+        treatment_pets = self.get_queryset().filter(status='treatment')
+        serializer = self.get_serializer(treatment_pets, many=True)
+        return Response(serializer.data)
