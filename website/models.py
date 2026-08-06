@@ -24,9 +24,9 @@ class Pet(models.Model):
     approximate_birth_date = models.DateField("Дата рождения (приблизительно)", default=date.today, blank=False)
     health_issues = models.BooleanField("Есть проблемы со здоровьем", default=False)
 
-    treatment_description = models.CharField("Описание лечения", max_length=100, blank=True, default="", help_text="Кратко опишите необходимое лечение. Лимит - 50 символов")
+    treatment_description = models.TextField("Описание лечения", max_length=100, blank=True, default="", help_text="Кратко опишите необходимое лечение. Лимит - 100 символов")
 
-    description = models.TextField("Описание", blank=False)
+    description = models.TextField("Описание", blank=True)
 
     status = models.CharField("Статус", max_length=20, choices=STATUS_CHOICES, blank=False)
 
@@ -71,7 +71,9 @@ class Pet(models.Model):
             self.phone = None
             self.mail = None
             self.taken_date = None
-        if self.status != 'treatment':
+        if self.status == 'treatment':
+            self.description = ""
+        else:
             self.treatment_description = ""
         super().save(*args, **kwargs)
 
@@ -93,6 +95,9 @@ class Pet(models.Model):
         if self.status == "treatment":
             if not self.treatment_description:
                 errors["treatment_description"] = "Это поле обязательно."
+        if self.status != "treatment":
+            if not self.description:
+                errors["description"] = "Это поле обязательно."
         if errors:
             raise ValidationError(errors)
 

@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelector(".field-treatment_description"),
     ];
 
+    const descriptionRow = document.querySelector(".field-description");
+
     function updateVisibility() {
         const showOwner =
             status.value === "adopted" ||
@@ -31,6 +33,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 row.style.display = showTreatment ? "" : "none";
             }
         });
+        if (descriptionRow) {
+            descriptionRow.style.display = showTreatment ? "none" : "";
+        }
     }
 
     updateVisibility();
